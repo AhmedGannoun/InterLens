@@ -134527,7 +134527,7 @@ ${lanes.join("\n")}
           writeFile: host.writeFile && writeFile2,
           addOrDeleteFileOrDirectory,
           addOrDeleteFile,
-          clearCache,
+          clearCache: clearCache2,
           realpath: host.realpath && realpath
         };
         function toPath3(fileName) {
@@ -134674,7 +134674,7 @@ ${lanes.join("\n")}
         function addOrDeleteFileOrDirectory(fileOrDirectory, fileOrDirectoryPath) {
           const existingResult = getCachedFileSystemEntries(fileOrDirectoryPath);
           if (existingResult !== void 0) {
-            clearCache();
+            clearCache2();
             return void 0;
           }
           const parentResult = getCachedFileSystemEntriesForBaseDir(fileOrDirectoryPath);
@@ -134682,7 +134682,7 @@ ${lanes.join("\n")}
             return void 0;
           }
           if (!host.directoryExists) {
-            clearCache();
+            clearCache2();
             return void 0;
           }
           const baseName = getBaseNameOfFileName(fileOrDirectory);
@@ -134691,7 +134691,7 @@ ${lanes.join("\n")}
             directoryExists: host.directoryExists(fileOrDirectory)
           };
           if (fsQueryResult.directoryExists || hasEntry(parentResult.sortedAndCanonicalizedDirectories, getCanonicalFileName(baseName))) {
-            clearCache();
+            clearCache2();
           } else {
             updateFilesOfFileSystemEntry(parentResult, baseName, fsQueryResult.fileExists);
           }
@@ -134727,7 +134727,7 @@ ${lanes.join("\n")}
             }
           }
         }
-        function clearCache() {
+        function clearCache2() {
           cachedReadDirectoryResult.clear();
         }
       }
@@ -153538,7 +153538,7 @@ ${lanes.join("\n")}
           tryGetSourcePosition,
           tryGetGeneratedPosition,
           toLineColumnOffset,
-          clearCache,
+          clearCache: clearCache2,
           documentPositionMappers
         };
         function toPath3(fileName) {
@@ -153612,7 +153612,7 @@ ${lanes.join("\n")}
           const file = getSourceFileLike(fileName);
           return file.getLineAndCharacterOfPosition(position);
         }
-        function clearCache() {
+        function clearCache2() {
           sourceFileLike.clear();
           documentPositionMappers.clear();
         }
@@ -163925,16 +163925,16 @@ ${newComment.split("\n").map((c) => ` * ${c}`).join("\n")}
       function getAllFixes(context) {
         return fixIdToRegistration.get(cast(context.fixId, isString)).getAllCodeActions(context);
       }
-      function createCombinedCodeActions(changes, commands) {
-        return { changes, commands };
+      function createCombinedCodeActions(changes, commands5) {
+        return { changes, commands: commands5 };
       }
       function createFileTextChanges(fileName, textChanges2) {
         return { fileName, textChanges: textChanges2 };
       }
       function codeFixAll(context, errorCodes67, use) {
-        const commands = [];
-        const changes = ts_textChanges_exports.ChangeTracker.with(context, (t) => eachDiagnostic(context, errorCodes67, (diag2) => use(t, diag2, commands)));
-        return createCombinedCodeActions(changes, commands.length === 0 ? void 0 : commands);
+        const commands5 = [];
+        const changes = ts_textChanges_exports.ChangeTracker.with(context, (t) => eachDiagnostic(context, errorCodes67, (diag2) => use(t, diag2, commands5)));
+        return createCombinedCodeActions(changes, commands5.length === 0 ? void 0 : commands5);
       }
       function eachDiagnostic(context, errorCodes67, cb) {
         for (const diag2 of getDiagnostics(context)) {
@@ -167528,8 +167528,8 @@ ${newComment.split("\n").map((c) => ` * ${c}`).join("\n")}
         const packageJsonImportFilter = createPackageJsonImportFilter(sourceFile, preferences, host);
         return getBestFix(getImportFixes(exportInfos, position, isValidTypeOnlyUseSite, useRequire, program, sourceFile, host, preferences).fixes, sourceFile, program, packageJsonImportFilter, host, preferences);
       }
-      function codeFixActionToCodeAction({ description: description3, changes, commands }) {
-        return { description: description3, changes, commands };
+      function codeFixActionToCodeAction({ description: description3, changes, commands: commands5 }) {
+        return { description: description3, changes, commands: commands5 };
       }
       function getAllExportInfoForSymbol(importingFile, symbol, symbolName2, moduleSymbol, preferCapitalized, program, host, preferences, cancellationToken) {
         const getChecker = createGetChecker(program, host);
@@ -170387,14 +170387,14 @@ ${newComment.split("\n").map((c) => ` * ${c}`).join("\n")}
         },
         fixIds: [fixIdInstallTypesPackage],
         getAllCodeActions: (context) => {
-          return codeFixAll(context, errorCodes30, (_changes, diag2, commands) => {
+          return codeFixAll(context, errorCodes30, (_changes, diag2, commands5) => {
             const packageName = tryGetImportedPackageName(diag2.file, diag2.start);
             if (packageName === void 0) return void 0;
             switch (context.fixId) {
               case fixIdInstallTypesPackage: {
                 const pkg = getTypesPackageNameToInstall(packageName, context.host, diag2.code);
                 if (pkg) {
-                  commands.push(getInstallCommand(diag2.file.fileName, pkg));
+                  commands5.push(getInstallCommand(diag2.file.fileName, pkg));
                 }
                 break;
               }
@@ -206413,8 +206413,8 @@ ${e.message}`;
           }
         }
         applyCodeActionCommand(args) {
-          const commands = args.command;
-          for (const command of toArray(commands)) {
+          const commands5 = args.command;
+          for (const command of toArray(commands5)) {
             const { file, project } = this.getFileAndProject(command);
             project.getLanguageService().applyCodeActionCommand(command, this.getFormatOptions(file)).then(
               (_result) => {
@@ -206441,11 +206441,11 @@ ${e.message}`;
           }
           return { startPosition, endPosition };
         }
-        mapCodeAction({ description: description3, changes, commands }) {
-          return { description: description3, changes: this.mapTextChangesToCodeEdits(changes), commands };
+        mapCodeAction({ description: description3, changes, commands: commands5 }) {
+          return { description: description3, changes: this.mapTextChangesToCodeEdits(changes), commands: commands5 };
         }
-        mapCodeFixAction({ fixName: fixName8, description: description3, changes, commands, fixId: fixId55, fixAllDescription }) {
-          return { fixName: fixName8, description: description3, changes: this.mapTextChangesToCodeEdits(changes), commands, fixId: fixId55, fixAllDescription };
+        mapCodeFixAction({ fixName: fixName8, description: description3, changes, commands: commands5, fixId: fixId55, fixAllDescription }) {
+          return { fixName: fixName8, description: description3, changes: this.mapTextChangesToCodeEdits(changes), commands: commands5, fixId: fixId55, fixAllDescription };
         }
         mapPasteEditsAction({ edits, fixId: fixId55 }) {
           return { edits: this.mapTextChangesToCodeEdits(edits), fixId: fixId55 };
@@ -271903,14 +271903,626 @@ var init_analysis = __esm({
   }
 });
 
+// packages/core/src/llm/template.ts
+var TemplateProvider;
+var init_template = __esm({
+  "packages/core/src/llm/template.ts"() {
+    "use strict";
+    TemplateProvider = class {
+      constructor() {
+        this.id = "none";
+      }
+      async explain(input, _signal) {
+        const { finding } = input;
+        const markdown = [
+          `**${finding.description}**`,
+          "",
+          finding.detail,
+          "",
+          `*Teammate: ${finding.teammateName} (${finding.teammateEmail})*`,
+          `*Files: \`${finding.myFile}\` \u2194 \`${finding.theirFile}\`*`
+        ].join("\n");
+        return { markdown, fromCache: false };
+      }
+      async testConnection() {
+        return { ok: true };
+      }
+    };
+  }
+});
+
+// packages/core/src/llm/system-prompt.ts
+var SYSTEM_PROMPT;
+var init_system_prompt = __esm({
+  "packages/core/src/llm/system-prompt.ts"() {
+    "use strict";
+    SYSTEM_PROMPT = `You are a developer coordination assistant. A teammate has made a change that affects code another developer is working on.
+Explain the situation clearly and concisely.
+
+Structure your response in exactly three sections:
+1. What changed and who changed it (one sentence).
+2. Which line breaks and why (one or two sentences).
+3. Recommended fix and who should act (one sentence).
+
+Maximum 120 words total. Use plain language, no bullet points, no headings.`;
+  }
+});
+
+// packages/core/src/llm/openai.ts
+function buildUserPrompt(input) {
+  const { finding } = input;
+  const lines = [
+    `Finding type: ${finding.type}`,
+    `My file: ${finding.myFile}`,
+    `Teammate file: ${finding.theirFile}`,
+    `Teammate: ${finding.teammateName} (${finding.teammateEmail})`,
+    "",
+    `Description: ${finding.description}`,
+    ""
+  ];
+  if (finding.tscError) {
+    lines.push(`TypeScript error: ${finding.tscError}`, "");
+  }
+  if (input.myDiffHunk) {
+    lines.push("My diff hunk:", "```diff", input.myDiffHunk, "```", "");
+  }
+  if (input.theirDiffHunk) {
+    lines.push("Teammate's diff hunk:", "```diff", input.theirDiffHunk, "```", "");
+  }
+  return lines.join("\n");
+}
+async function collectOpenAIStream(body, signal, onToken) {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let result = "";
+  try {
+    while (true) {
+      if (signal.aborted) throw new Error("Request aborted");
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (!trimmed || trimmed === "data: [DONE]") continue;
+        if (!trimmed.startsWith("data: ")) continue;
+        const json = trimmed.slice("data: ".length);
+        try {
+          const parsed = JSON.parse(json);
+          const token = parsed.choices?.[0]?.delta?.content ?? "";
+          if (token) {
+            result += token;
+            onToken?.(token);
+          }
+        } catch {
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  return result;
+}
+var OpenAIProvider;
+var init_openai = __esm({
+  "packages/core/src/llm/openai.ts"() {
+    "use strict";
+    init_system_prompt();
+    OpenAIProvider = class {
+      constructor(options) {
+        this.options = options;
+        this.id = "openai";
+        this.baseUrl = (options.baseUrl ?? "https://api.openai.com/v1").replace(/\/$/, "");
+        this.model = options.model || "gpt-4o-mini";
+        this.timeoutMs = options.timeoutMs ?? 2e4;
+      }
+      async explain(input, signal) {
+        const body = JSON.stringify({
+          model: this.model,
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: buildUserPrompt(input) }
+          ],
+          stream: true
+        });
+        const timeoutController = new AbortController();
+        const timeoutId = setTimeout(() => timeoutController.abort(), this.timeoutMs);
+        const combinedSignal = this.combineSignals(signal, timeoutController.signal);
+        try {
+          const response = await fetch(`${this.baseUrl}/chat/completions`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${this.options.apiKey}`
+            },
+            body,
+            signal: combinedSignal
+          });
+          if (!response.ok) {
+            const errorText = await response.text().catch(() => "");
+            throw new Error(`OpenAI API error ${response.status}: ${errorText}`);
+          }
+          if (!response.body) {
+            throw new Error("OpenAI API returned no response body");
+          }
+          const markdown = await collectOpenAIStream(response.body, combinedSignal);
+          return { markdown: markdown.trim(), fromCache: false };
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      }
+      async testConnection() {
+        try {
+          const response = await fetch(`${this.baseUrl}/models`, {
+            headers: { Authorization: `Bearer ${this.options.apiKey}` },
+            signal: AbortSignal.timeout(1e4)
+          });
+          if (!response.ok) {
+            return { ok: false, error: `HTTP ${response.status}` };
+          }
+          return { ok: true };
+        } catch (err) {
+          return { ok: false, error: String(err) };
+        }
+      }
+      combineSignals(a, b) {
+        const controller = new AbortController();
+        const abort = () => controller.abort();
+        if (a.aborted || b.aborted) {
+          controller.abort();
+        } else {
+          a.addEventListener("abort", abort, { once: true });
+          b.addEventListener("abort", abort, { once: true });
+        }
+        return controller.signal;
+      }
+    };
+  }
+});
+
+// packages/core/src/llm/anthropic.ts
+async function collectAnthropicStream(body, signal, onToken) {
+  const reader = body.getReader();
+  const decoder = new TextDecoder();
+  let buffer = "";
+  let result = "";
+  let currentEvent = "";
+  try {
+    while (true) {
+      if (signal.aborted) throw new Error("Request aborted");
+      const { done, value } = await reader.read();
+      if (done) break;
+      buffer += decoder.decode(value, { stream: true });
+      const lines = buffer.split("\n");
+      buffer = lines.pop() ?? "";
+      for (const line of lines) {
+        const trimmed = line.trim();
+        if (trimmed.startsWith("event: ")) {
+          currentEvent = trimmed.slice("event: ".length).trim();
+          continue;
+        }
+        if (trimmed.startsWith("data: ")) {
+          const json = trimmed.slice("data: ".length);
+          if (!json || json === "[DONE]") continue;
+          if (currentEvent !== "content_block_delta") continue;
+          try {
+            const parsed = JSON.parse(json);
+            if (parsed.delta?.type === "text_delta") {
+              const token = parsed.delta.text ?? "";
+              if (token) {
+                result += token;
+                onToken?.(token);
+              }
+            }
+          } catch {
+          }
+          continue;
+        }
+        if (trimmed === "") {
+          currentEvent = "";
+        }
+      }
+    }
+  } finally {
+    reader.releaseLock();
+  }
+  return result;
+}
+function combineSignals(a, b) {
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+  if (a.aborted || b.aborted) {
+    controller.abort();
+  } else {
+    a.addEventListener("abort", abort, { once: true });
+    b.addEventListener("abort", abort, { once: true });
+  }
+  return controller.signal;
+}
+var BASE_URL, ANTHROPIC_VERSION, AnthropicProvider;
+var init_anthropic = __esm({
+  "packages/core/src/llm/anthropic.ts"() {
+    "use strict";
+    init_system_prompt();
+    init_openai();
+    BASE_URL = "https://api.anthropic.com";
+    ANTHROPIC_VERSION = "2023-06-01";
+    AnthropicProvider = class {
+      constructor(options) {
+        this.options = options;
+        this.id = "anthropic";
+        this.model = options.model || "claude-haiku-4-5";
+        this.timeoutMs = options.timeoutMs ?? 2e4;
+      }
+      async explain(input, signal) {
+        const requestBody = JSON.stringify({
+          model: this.model,
+          max_tokens: 512,
+          system: SYSTEM_PROMPT,
+          messages: [{ role: "user", content: buildUserPrompt(input) }],
+          stream: true
+        });
+        const timeoutController = new AbortController();
+        const timeoutId = setTimeout(() => timeoutController.abort(), this.timeoutMs);
+        const combinedSignal = combineSignals(signal, timeoutController.signal);
+        try {
+          const response = await fetch(`${BASE_URL}/v1/messages`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": this.options.apiKey,
+              "anthropic-version": ANTHROPIC_VERSION
+            },
+            body: requestBody,
+            signal: combinedSignal
+          });
+          if (!response.ok) {
+            const errorText = await response.text().catch(() => "");
+            throw new Error(`Anthropic API error ${response.status}: ${errorText}`);
+          }
+          if (!response.body) {
+            throw new Error("Anthropic API returned no response body");
+          }
+          const markdown = await collectAnthropicStream(response.body, combinedSignal);
+          return { markdown: markdown.trim(), fromCache: false };
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      }
+      async testConnection() {
+        try {
+          const response = await fetch(`${BASE_URL}/v1/messages`, {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "x-api-key": this.options.apiKey,
+              "anthropic-version": ANTHROPIC_VERSION
+            },
+            body: JSON.stringify({
+              model: this.model,
+              max_tokens: 1,
+              messages: [{ role: "user", content: "ping" }]
+            }),
+            signal: AbortSignal.timeout(1e4)
+          });
+          if (response.status === 401 || response.status === 403) {
+            return { ok: false, error: `Authentication failed (HTTP ${response.status})` };
+          }
+          return { ok: true };
+        } catch (err) {
+          return { ok: false, error: String(err) };
+        }
+      }
+    };
+  }
+});
+
+// packages/core/src/llm/openai-compat.ts
+function combineSignals2(a, b) {
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+  if (a.aborted || b.aborted) {
+    controller.abort();
+  } else {
+    a.addEventListener("abort", abort, { once: true });
+    b.addEventListener("abort", abort, { once: true });
+  }
+  return controller.signal;
+}
+var OpenAICompatProvider;
+var init_openai_compat = __esm({
+  "packages/core/src/llm/openai-compat.ts"() {
+    "use strict";
+    init_system_prompt();
+    init_openai();
+    OpenAICompatProvider = class {
+      constructor(options) {
+        this.options = options;
+        this.id = "openai-compatible";
+        this.baseUrl = options.baseUrl.replace(/\/$/, "");
+        this.timeoutMs = options.timeoutMs ?? 2e4;
+      }
+      async explain(input, signal) {
+        if (!this.options.baseUrl) {
+          return {
+            markdown: "OpenAI-compatible base URL is not configured. Please set `interlens.llm.baseUrl`.",
+            fromCache: false
+          };
+        }
+        const requestBody = JSON.stringify({
+          model: this.options.model,
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: buildUserPrompt(input) }
+          ],
+          stream: true
+        });
+        const headers = {
+          "Content-Type": "application/json"
+        };
+        if (this.options.apiKey) {
+          headers["Authorization"] = `Bearer ${this.options.apiKey}`;
+        }
+        const timeoutController = new AbortController();
+        const timeoutId = setTimeout(() => timeoutController.abort(), this.timeoutMs);
+        const combinedSignal = combineSignals2(signal, timeoutController.signal);
+        try {
+          const response = await fetch(`${this.baseUrl}/chat/completions`, {
+            method: "POST",
+            headers,
+            body: requestBody,
+            signal: combinedSignal
+          });
+          if (!response.ok) {
+            const errorText = await response.text().catch(() => "");
+            throw new Error(`OpenAI-compatible API error ${response.status}: ${errorText}`);
+          }
+          if (!response.body) {
+            throw new Error("OpenAI-compatible API returned no response body");
+          }
+          const markdown = await collectOpenAIStream(response.body, combinedSignal);
+          return { markdown: markdown.trim(), fromCache: false };
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      }
+      async testConnection() {
+        if (!this.options.baseUrl) {
+          return { ok: false, error: "Base URL not configured" };
+        }
+        try {
+          const headers = {};
+          if (this.options.apiKey) {
+            headers["Authorization"] = `Bearer ${this.options.apiKey}`;
+          }
+          const response = await fetch(`${this.baseUrl}/models`, {
+            headers,
+            signal: AbortSignal.timeout(1e4)
+          });
+          if (!response.ok) {
+            return { ok: false, error: `HTTP ${response.status}` };
+          }
+          return { ok: true };
+        } catch (err) {
+          return { ok: false, error: String(err) };
+        }
+      }
+    };
+  }
+});
+
+// packages/core/src/llm/ibm-bob.ts
+function combineSignals3(a, b) {
+  const controller = new AbortController();
+  const abort = () => controller.abort();
+  if (a.aborted || b.aborted) {
+    controller.abort();
+  } else {
+    a.addEventListener("abort", abort, { once: true });
+    b.addEventListener("abort", abort, { once: true });
+  }
+  return controller.signal;
+}
+var IbmBobProvider;
+var init_ibm_bob = __esm({
+  "packages/core/src/llm/ibm-bob.ts"() {
+    "use strict";
+    init_system_prompt();
+    init_openai();
+    init_template();
+    IbmBobProvider = class {
+      constructor(options) {
+        this.options = options;
+        this.id = "ibm-bob";
+        this.fallback = new TemplateProvider();
+        this.baseUrl = options.baseUrl.replace(/\/$/, "");
+        this.model = options.model ?? "";
+        this.timeoutMs = options.timeoutMs ?? 2e4;
+      }
+      async explain(input, signal) {
+        if (!this.options.baseUrl) {
+          const templateResult = await this.fallback.explain(input, signal);
+          return {
+            markdown: [
+              templateResult.markdown,
+              "",
+              "---",
+              "*IBM Bob base URL not configured. [Fix settings](command:workbench.action.openSettings?%5B%22interlens.llm%22%5D)*"
+            ].join("\n"),
+            fromCache: false
+          };
+        }
+        const requestBody = JSON.stringify({
+          model: this.model || void 0,
+          messages: [
+            { role: "system", content: SYSTEM_PROMPT },
+            { role: "user", content: buildUserPrompt(input) }
+          ],
+          stream: true
+        });
+        const headers = {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${this.options.apiKey}`
+        };
+        if (this.options.teamId) {
+          headers["X-Bob-Team-Id"] = this.options.teamId;
+        }
+        const timeoutController = new AbortController();
+        const timeoutId = setTimeout(() => timeoutController.abort(), this.timeoutMs);
+        const combinedSignal = combineSignals3(signal, timeoutController.signal);
+        try {
+          const response = await fetch(`${this.baseUrl}/chat/completions`, {
+            method: "POST",
+            headers,
+            body: requestBody,
+            signal: combinedSignal
+          });
+          if (!response.ok) {
+            const errorText = await response.text().catch(() => "");
+            throw new Error(`IBM Bob API error ${response.status}: ${errorText}`);
+          }
+          if (!response.body) {
+            throw new Error("IBM Bob API returned no response body");
+          }
+          const markdown = await collectOpenAIStream(response.body, combinedSignal);
+          return { markdown: markdown.trim(), fromCache: false };
+        } finally {
+          clearTimeout(timeoutId);
+        }
+      }
+      async testConnection() {
+        if (!this.options.baseUrl) {
+          return { ok: false, error: "IBM Bob base URL not configured" };
+        }
+        try {
+          const headers = {
+            Authorization: `Bearer ${this.options.apiKey}`
+          };
+          if (this.options.teamId) {
+            headers["X-Bob-Team-Id"] = this.options.teamId;
+          }
+          const response = await fetch(`${this.baseUrl}/models`, {
+            headers,
+            signal: AbortSignal.timeout(1e4)
+          });
+          if (!response.ok) {
+            return { ok: false, error: `HTTP ${response.status}` };
+          }
+          return { ok: true };
+        } catch (err) {
+          return { ok: false, error: String(err) };
+        }
+      }
+    };
+  }
+});
+
+// packages/core/src/llm/cache.ts
+function buildCacheKey(finding) {
+  return (0, import_crypto.createHash)("sha256").update(finding.id).update(finding.mySnapshotHash).update(finding.theirSnapshotHash).digest("hex");
+}
+function getFromCache(key) {
+  return _cache.get(key);
+}
+function setInCache(key, result) {
+  _cache.set(key, { ...result, fromCache: true });
+}
+function clearCache() {
+  _cache.clear();
+}
+function cacheSize() {
+  return _cache.size;
+}
+var import_crypto, _cache;
+var init_cache = __esm({
+  "packages/core/src/llm/cache.ts"() {
+    "use strict";
+    import_crypto = require("crypto");
+    _cache = /* @__PURE__ */ new Map();
+  }
+});
+
+// packages/core/src/llm/index.ts
+function createProvider(opts) {
+  const apiKey = opts.apiKey ?? "";
+  const timeoutMs = opts.timeoutMs ?? 2e4;
+  switch (opts.provider) {
+    case "openai":
+      return new OpenAIProvider({
+        apiKey,
+        baseUrl: opts.baseUrl,
+        model: opts.model,
+        timeoutMs
+      });
+    case "anthropic":
+      return new AnthropicProvider({
+        apiKey,
+        model: opts.model,
+        timeoutMs
+      });
+    case "openai-compatible":
+      return new OpenAICompatProvider({
+        baseUrl: opts.baseUrl ?? "",
+        model: opts.model ?? "",
+        apiKey: apiKey || void 0,
+        timeoutMs
+      });
+    case "ibm-bob":
+      return new IbmBobProvider({
+        baseUrl: opts.baseUrl ?? "",
+        apiKey,
+        teamId: opts.teamId,
+        model: opts.model,
+        timeoutMs
+      });
+    case "none":
+    default:
+      return new TemplateProvider();
+  }
+}
+var init_llm = __esm({
+  "packages/core/src/llm/index.ts"() {
+    "use strict";
+    init_template();
+    init_openai();
+    init_openai();
+    init_anthropic();
+    init_anthropic();
+    init_openai_compat();
+    init_ibm_bob();
+    init_cache();
+    init_system_prompt();
+    init_template();
+    init_openai();
+    init_anthropic();
+    init_openai_compat();
+    init_ibm_bob();
+  }
+});
+
 // packages/core/src/index.ts
 var src_exports = {};
 __export(src_exports, {
+  AnthropicProvider: () => AnthropicProvider,
   GitPollingNotifier: () => GitPollingNotifier,
+  IbmBobProvider: () => IbmBobProvider,
+  OpenAICompatProvider: () => OpenAICompatProvider,
+  OpenAIProvider: () => OpenAIProvider,
+  SYSTEM_PROMPT: () => SYSTEM_PROMPT,
+  TemplateProvider: () => TemplateProvider,
   announceSnapshot: () => announceSnapshot,
+  buildCacheKey: () => buildCacheKey,
+  buildUserPrompt: () => buildUserPrompt,
+  cacheSize: () => cacheSize,
+  clearCache: () => clearCache,
   clearCheckCache: () => clearCheckCache,
   clearMaterialisedCache: () => clearMaterialisedCache,
+  collectAnthropicStream: () => collectAnthropicStream,
+  collectOpenAIStream: () => collectOpenAIStream,
   compareEndpoints: () => compareEndpoints,
+  createProvider: () => createProvider,
   createSnapshot: () => createSnapshot,
   detectCollisions: () => detectCollisions,
   detectUnambiguousRename: () => detectUnambiguousRename,
@@ -271919,12 +272531,14 @@ __export(src_exports, {
   extractCalls: () => extractCalls,
   extractRoutes: () => extractRoutes,
   fetchTeammateSnapshot: () => fetchTeammateSnapshot,
+  getFromCache: () => getFromCache,
   materializeTree: () => materializeTree,
   normalizePath: () => normalizePath,
   normalizeUrl: () => normalizeUrl,
   parseTscOutput: () => parseTscOutput,
   runAnalysis: () => runAnalysis,
   runCheck: () => runCheck,
+  setInCache: () => setInCache,
   tryMerge: () => tryMerge
 });
 var init_src = __esm({
@@ -271938,6 +272552,7 @@ var init_src = __esm({
     init_tsc();
     init_collision();
     init_endpoints();
+    init_llm();
   }
 });
 
@@ -271948,7 +272563,7 @@ __export(extension_exports, {
   deactivate: () => deactivate
 });
 module.exports = __toCommonJS(extension_exports);
-var vscode5 = __toESM(require("vscode"));
+var vscode10 = __toESM(require("vscode"));
 init_src();
 
 // extension/src/snapshot-producer.ts
@@ -272316,6 +272931,362 @@ var TeammateTreeDataProvider = class {
   }
 };
 
+// extension/src/commands/explain.ts
+var vscode6 = __toESM(require("vscode"));
+init_src();
+
+// extension/src/secrets.ts
+function secretKey(provider) {
+  return `interlens.apiKey.${provider}`;
+}
+async function storeApiKey(secrets, provider, key) {
+  await secrets.store(secretKey(provider), key);
+}
+async function getApiKey(secrets, provider) {
+  return secrets.get(secretKey(provider));
+}
+async function deleteApiKey(secrets, provider) {
+  await secrets.delete(secretKey(provider));
+}
+function redactKey(errorText, keyValue) {
+  if (!keyValue || keyValue.length === 0) return errorText;
+  const escaped = keyValue.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+  return errorText.replace(new RegExp(escaped, "g"), "[REDACTED]");
+}
+
+// extension/src/webview/explain-panel.ts
+var vscode5 = __toESM(require("vscode"));
+function openExplainPanel(context, finding) {
+  const panel = vscode5.window.createWebviewPanel(
+    "interlens.explain",
+    `InterLens: Explain \u2014 ${finding.type}`,
+    vscode5.ViewColumn.Beside,
+    {
+      enableScripts: true,
+      retainContextWhenHidden: true
+    }
+  );
+  const ac = new AbortController();
+  panel.onDidDispose(() => ac.abort(), void 0, context.subscriptions);
+  panel.webview.html = buildWebviewHtml(finding);
+  return {
+    postToken(text) {
+      void panel.webview.postMessage({ type: "token", text });
+    },
+    postDone() {
+      void panel.webview.postMessage({ type: "done" });
+    },
+    postError(redactedText) {
+      void panel.webview.postMessage({ type: "error", text: redactedText });
+    },
+    signal: ac.signal,
+    dispose() {
+      panel.dispose();
+    }
+  };
+}
+function escapeHtml(str) {
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+function buildWebviewHtml(finding) {
+  const escapedDesc = escapeHtml(finding.description);
+  const escapedType = escapeHtml(finding.type);
+  const escapedFile = escapeHtml(finding.myFile);
+  const scriptBody = [
+    "(function() {",
+    '  "use strict";',
+    "",
+    '  var FENCE = "```";',
+    "",
+    "  // Minimal markdown-to-HTML renderer (no external dependency).",
+    "  function renderMarkdown(md) {",
+    '    var lines = md.split("\\n");',
+    '    var html = "";',
+    "    var inCode = false;",
+    '    var codeBuf = "";',
+    "",
+    "    for (var i = 0; i < lines.length; i++) {",
+    "      var line = lines[i];",
+    "      if (line.indexOf(FENCE) === 0) {",
+    "        if (inCode) {",
+    '          html += "<pre><code>" + escHtml(codeBuf.replace(/\\n$/, "")) + "</code></pre>\\n";',
+    '          inCode = false; codeBuf = "";',
+    "        } else { inCode = true; }",
+    "        continue;",
+    "      }",
+    '      if (inCode) { codeBuf += line + "\\n"; continue; }',
+    "      var f = line",
+    '        .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")',
+    '        .replace(/\\*\\*(.+?)\\*\\*/g, "<strong>$1</strong>")',
+    '        .replace(/\\*(.+?)\\*/g, "<em>$1</em>")',
+    '        .replace(/`([^`]+)`/g, "<code>$1</code>");',
+    '      html += (f.trim() === "") ? "<p></p>\\n" : "<p>" + f + "</p>\\n";',
+    "    }",
+    '    if (inCode) { html += "<pre><code>" + escHtml(codeBuf) + "</code></pre>\\n"; }',
+    "    return html;",
+    "  }",
+    "",
+    "  function escHtml(s) {",
+    '    return s.replace(/&/g,"&amp;").replace(/</g,"&lt;").replace(/>/g,"&gt;");',
+    "  }",
+    "",
+    '  var rawText = "";',
+    '  var spinner = document.getElementById("spinner");',
+    '  var content = document.getElementById("content");',
+    '  var errorBox = document.getElementById("error-box");',
+    "",
+    '  window.addEventListener("message", function(event) {',
+    "    var msg = event.data;",
+    '    if (msg.type === "token") {',
+    "      rawText += msg.text;",
+    '      if (spinner) { spinner.style.display = "none"; }',
+    "      content.innerHTML = renderMarkdown(rawText);",
+    '    } else if (msg.type === "done") {',
+    '      if (spinner) { spinner.style.display = "none"; }',
+    '      content.innerHTML = rawText ? renderMarkdown(rawText) : "<p><em>No explanation returned.</em></p>";',
+    '    } else if (msg.type === "error") {',
+    '      if (spinner) { spinner.style.display = "none"; }',
+    '      errorBox.style.display = "block";',
+    '      errorBox.textContent = "Error: " + msg.text;',
+    "    }",
+    "  });",
+    "}());"
+  ].join("\n");
+  return [
+    "<!DOCTYPE html>",
+    '<html lang="en">',
+    "<head>",
+    '<meta charset="UTF-8">',
+    '<meta name="viewport" content="width=device-width, initial-scale=1.0">',
+    "<title>InterLens: Explain</title>",
+    "<style>",
+    "  * { box-sizing: border-box; }",
+    "  body {",
+    '    font-family: var(--vscode-font-family, -apple-system, "Segoe UI", sans-serif);',
+    "    font-size: var(--vscode-font-size, 13px);",
+    "    color: var(--vscode-editor-foreground, #1f2328);",
+    "    background: var(--vscode-editor-background, #fff);",
+    "    margin: 0; padding: 16px 20px; line-height: 1.6;",
+    "  }",
+    "  header { border-bottom: 1px solid var(--vscode-panel-border, #e5e7eb); padding-bottom: 10px; margin-bottom: 16px; }",
+    "  h1 { font-size: 1rem; margin: 0 0 4px; }",
+    "  .meta { font-size: 0.85rem; color: var(--vscode-descriptionForeground, #57606a); }",
+    "  #content { min-height: 40px; }",
+    "  #spinner { color: var(--vscode-descriptionForeground, #57606a); font-style: italic; }",
+    "  #error-box { display: none; background: var(--vscode-inputValidation-errorBackground, #f8d7da); border: 1px solid var(--vscode-inputValidation-errorBorder, #f5c6cb); color: var(--vscode-inputValidation-errorForeground, #721c24); padding: 8px 12px; border-radius: 4px; margin-top: 12px; }",
+    "  pre, code { background: var(--vscode-textBlockQuote-background, #f7f8fa); border-radius: 3px; font-size: 0.9em; }",
+    "  pre { padding: 8px 12px; overflow-x: auto; }",
+    "  code { padding: 1px 4px; }",
+    "  p { margin: 0 0 10px; }",
+    "</style>",
+    "</head>",
+    "<body>",
+    "<header>",
+    "  <h1>InterLens: Explain</h1>",
+    `  <div class="meta"><strong>${escapedType}</strong> &mdash; <code>${escapedFile}</code></div>`,
+    `  <div class="meta" style="margin-top:4px">${escapedDesc}</div>`,
+    "</header>",
+    '<div id="content"><span id="spinner">Generating explanation&hellip;</span></div>',
+    '<div id="error-box"></div>',
+    "<script>",
+    scriptBody,
+    "</script>",
+    "</body>",
+    "</html>"
+  ].join("\n");
+}
+
+// extension/src/commands/explain.ts
+var MAX_HUNK_LINES = 60;
+function trimHunk(hunk) {
+  const lines = hunk.split("\n");
+  if (lines.length <= MAX_HUNK_LINES) return hunk;
+  return lines.slice(0, MAX_HUNK_LINES).join("\n") + "\n[\u2026truncated]";
+}
+async function getDiffHunk(repoRoot, filePath, commitSha) {
+  try {
+    const { execFile: execFile7 } = await import("child_process");
+    const { promisify: promisify7 } = await import("util");
+    const exec = promisify7(execFile7);
+    const { stdout } = await exec("git", ["diff", commitSha, "--", filePath], {
+      cwd: repoRoot,
+      maxBuffer: 4 * 1024 * 1024
+    });
+    return trimHunk(stdout);
+  } catch {
+    return "";
+  }
+}
+function registerExplainCommand(context, repoRoot, findingsByEmail2, channel) {
+  return vscode6.commands.registerCommand(
+    "interlens.explain",
+    async (finding) => {
+      if (!finding) {
+        const all = [...findingsByEmail2.values()].flat();
+        if (all.length === 0) {
+          await vscode6.window.showInformationMessage("InterLens: No findings to explain.");
+          return;
+        }
+        const items = all.map((f) => ({
+          label: `$(warning) ${f.description}`,
+          description: `${f.myFile} \u2194 ${f.theirFile}`,
+          finding: f
+        }));
+        const picked = await vscode6.window.showQuickPick(items, {
+          placeHolder: "Select a finding to explain"
+        });
+        if (!picked) return;
+        finding = picked.finding;
+      }
+      const cacheKey = buildCacheKey(finding);
+      const cached = getFromCache(cacheKey);
+      if (cached) {
+        channel.appendLine(`[InterLens] Explain cache hit for ${finding.id}`);
+        const panel2 = openExplainPanel(context, finding);
+        panel2.postToken(cached.markdown);
+        panel2.postDone();
+        return;
+      }
+      const cfg = vscode6.workspace.getConfiguration("interlens.llm");
+      const provider = cfg.get("provider") ?? "ibm-bob";
+      const baseUrl = cfg.get("baseUrl") ?? "";
+      const model = cfg.get("model") ?? "";
+      const teamId = cfg.get("bobTeamId") ?? "";
+      const timeoutMs = cfg.get("timeoutMs") ?? 2e4;
+      const apiKey = await getApiKey(context.secrets, provider) ?? "";
+      if (provider === "ibm-bob" && !apiKey && baseUrl) {
+        const choice = await vscode6.window.showInformationMessage(
+          "InterLens: Add your IBM Bob API key to enable explanations.",
+          "Add IBM Bob key",
+          "Use another provider"
+        );
+        if (choice === "Add IBM Bob key") {
+          await vscode6.commands.executeCommand("interlens.setApiKey");
+          return;
+        } else if (choice === "Use another provider") {
+          await vscode6.commands.executeCommand(
+            "workbench.action.openSettings",
+            "interlens.llm"
+          );
+          return;
+        }
+        return;
+      }
+      const llmProvider = createProvider({
+        provider,
+        apiKey,
+        baseUrl,
+        model,
+        teamId,
+        timeoutMs
+      });
+      const myHunk = await getDiffHunk(repoRoot, finding.myFile, finding.mySnapshotHash);
+      const theirHunk = await getDiffHunk(repoRoot, finding.theirFile, finding.theirSnapshotHash);
+      const input = {
+        finding,
+        myDiffHunk: myHunk,
+        theirDiffHunk: theirHunk
+      };
+      const panel = openExplainPanel(context, finding);
+      try {
+        const result = await llmProvider.explain(input, panel.signal);
+        panel.postToken(result.markdown);
+        panel.postDone();
+        setInCache(cacheKey, result);
+        channel.appendLine(`[InterLens] Explain completed for ${finding.id} (provider: ${provider})`);
+      } catch (err) {
+        const errStr = redactKey(String(err), apiKey);
+        channel.appendLine(`[InterLens] Explain error: ${errStr}`);
+        panel.postError(errStr);
+      }
+    }
+  );
+}
+
+// extension/src/commands/set-api-key.ts
+var vscode7 = __toESM(require("vscode"));
+function registerSetApiKeyCommand(context) {
+  return vscode7.commands.registerCommand(
+    "interlens.setApiKey",
+    async (providerOverride) => {
+      const provider = providerOverride ?? vscode7.workspace.getConfiguration("interlens.llm").get("provider") ?? "ibm-bob";
+      const key = await vscode7.window.showInputBox({
+        title: `InterLens: Set API key for "${provider}"`,
+        prompt: `Enter your API key for the "${provider}" provider. It will be stored securely in VS Code SecretStorage.`,
+        password: true,
+        ignoreFocusOut: true,
+        validateInput: (v) => v?.trim() ? void 0 : "API key cannot be empty"
+      });
+      if (!key) return;
+      await storeApiKey(context.secrets, provider, key.trim());
+      await vscode7.window.showInformationMessage(
+        `InterLens: API key stored for "${provider}".`
+      );
+    }
+  );
+}
+
+// extension/src/commands/clear-api-key.ts
+var vscode8 = __toESM(require("vscode"));
+function registerClearApiKeyCommand(context) {
+  return vscode8.commands.registerCommand(
+    "interlens.clearApiKey",
+    async (providerOverride) => {
+      const provider = providerOverride ?? vscode8.workspace.getConfiguration("interlens.llm").get("provider") ?? "ibm-bob";
+      await deleteApiKey(context.secrets, provider);
+      await vscode8.window.showInformationMessage(
+        `InterLens: API key cleared for "${provider}".`
+      );
+    }
+  );
+}
+
+// extension/src/commands/test-connection.ts
+var vscode9 = __toESM(require("vscode"));
+init_src();
+function registerTestConnectionCommand(context) {
+  return vscode9.commands.registerCommand(
+    "interlens.testConnection",
+    async () => {
+      const cfg = vscode9.workspace.getConfiguration("interlens.llm");
+      const provider = cfg.get("provider") ?? "ibm-bob";
+      const baseUrl = cfg.get("baseUrl") ?? "";
+      const model = cfg.get("model") ?? "";
+      const teamId = cfg.get("bobTeamId") ?? "";
+      const timeoutMs = cfg.get("timeoutMs") ?? 2e4;
+      const apiKey = await getApiKey(context.secrets, provider) ?? "";
+      const llmProvider = createProvider({
+        provider,
+        apiKey,
+        baseUrl,
+        model,
+        teamId,
+        timeoutMs
+      });
+      await vscode9.window.withProgress(
+        {
+          location: vscode9.ProgressLocation.Notification,
+          title: `InterLens: Testing connection to "${provider}"\u2026`,
+          cancellable: false
+        },
+        async () => {
+          const result = await llmProvider.testConnection();
+          if (result.ok) {
+            await vscode9.window.showInformationMessage(
+              `InterLens: Connection to "${provider}" succeeded.`
+            );
+          } else {
+            const errMsg = redactKey(result.error ?? "Unknown error", apiKey);
+            await vscode9.window.showErrorMessage(
+              `InterLens: Connection to "${provider}" failed: ${errMsg}`
+            );
+          }
+        }
+      );
+    }
+  );
+}
+
 // extension/src/extension.ts
 var producer = null;
 var notifier = null;
@@ -272325,24 +273296,24 @@ var diagnostics = null;
 var treeProvider = null;
 var findingsByEmail = /* @__PURE__ */ new Map();
 function activate(context) {
-  const channel = vscode5.window.createOutputChannel("InterLens");
+  const channel = vscode10.window.createOutputChannel("InterLens");
   context.subscriptions.push(channel);
   channel.appendLine("InterLens activating\u2026");
-  const config = vscode5.workspace.getConfiguration("interlens");
+  const config = vscode10.workspace.getConfiguration("interlens");
   const debounceMs = config.get("sync.snapshotDebounceMs") ?? 5e3;
   const fetchIntervalSec = config.get("sync.fetchIntervalSec") ?? 5;
   const displayName = config.get("user.displayName") ?? "";
-  const workspaceRoot = vscode5.workspace.workspaceFolders?.[0]?.uri.fsPath ?? "";
+  const workspaceRoot = vscode10.workspace.workspaceFolders?.[0]?.uri.fsPath ?? "";
   if (!workspaceRoot) {
     channel.appendLine("[InterLens] No workspace folder open \u2014 all features disabled.");
     return;
   }
   statusBar = new InterLensStatusBar();
   context.subscriptions.push({ dispose: () => statusBar?.dispose() });
-  diagnostics = vscode5.languages.createDiagnosticCollection(COLLECTION_NAME);
+  diagnostics = vscode10.languages.createDiagnosticCollection(COLLECTION_NAME);
   context.subscriptions.push(diagnostics);
   treeProvider = new TeammateTreeDataProvider(workspaceRoot);
-  const treeView = vscode5.window.createTreeView("interlens.teammates", {
+  const treeView = vscode10.window.createTreeView("interlens.teammates", {
     treeDataProvider: treeProvider,
     showCollapseAll: true
   });
@@ -272386,7 +273357,7 @@ function activate(context) {
     ownEmail,
     fetchIntervalSec,
     onFocus: (trigger) => {
-      const disposable = vscode5.window.onDidChangeWindowState((state) => {
+      const disposable = vscode10.window.onDidChangeWindowState((state) => {
         if (state.focused) trigger();
       });
       context.subscriptions.push(disposable);
@@ -272431,6 +273402,12 @@ function activate(context) {
     const total = [...findingsByEmail.values()].reduce((s, a) => s + a.length, 0);
     statusBar?.setState("idle", total);
   });
+  context.subscriptions.push(
+    registerExplainCommand(context, workspaceRoot, findingsByEmail, channel),
+    registerSetApiKeyCommand(context),
+    registerClearApiKeyCommand(context),
+    registerTestConnectionCommand(context)
+  );
   channel.appendLine("InterLens activated.");
 }
 async function fetchAndRunAnalysis(change, workspaceRoot, mySnapshot, channel, treeProvider2) {

@@ -8,4 +8,6 @@ export { runCheck, diffErrors, parseTscOutput, detectUnambiguousRename, clearChe
 export { detectCollisions } from './engines/collision';
 export { extractRoutes, extractCalls, compareEndpoints, normalizePath, normalizeUrl, } from './engines/endpoints';
 export type { Route, ApiCall, ExtractResult } from './engines/endpoints';
+export { TemplateProvider, OpenAIProvider, AnthropicProvider, OpenAICompatProvider, IbmBobProvider, createProvider, buildCacheKey, getFromCache, setInCache, clearCache, cacheSize, buildUserPrompt, collectOpenAIStream, collectAnthropicStream, SYSTEM_PROMPT, } from './llm/index';
+export type { OpenAIProviderOptions, AnthropicProviderOptions, OpenAICompatProviderOptions, IbmBobProviderOptions, CreateProviderOptions, LLMProviderId, } from './llm/index';
 //# sourceMappingURL=index.d.ts.map
