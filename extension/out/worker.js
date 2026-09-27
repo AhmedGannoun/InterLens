@@ -209525,7 +209525,18 @@ var require_path = __commonJS({
 
 // node_modules/is-extglob/index.js
 var require_is_extglob = __commonJS({
-  "node_modules/is-extglob/index.js"() {
+  "node_modules/is-extglob/index.js"(exports2, module2) {
+    module2.exports = function isExtglob(str) {
+      if (typeof str !== "string" || str === "") {
+        return false;
+      }
+      var match;
+      while (match = /(\\).|([@?!+*]\(.*\))/g.exec(str)) {
+        if (match[2]) return true;
+        str = str.slice(match.index + match[0].length);
+      }
+      return false;
+    };
   }
 });
 
@@ -271583,6 +271594,14 @@ main().catch((err) => {
   See the Apache Version 2.0 License for specific language governing permissions
   and limitations under the License.
   ***************************************************************************** *)
+
+is-extglob/index.js:
+  (*!
+   * is-extglob <https://github.com/jonschlinkert/is-extglob>
+   *
+   * Copyright (c) 2014-2016, Jon Schlinkert.
+   * Licensed under the MIT License.
+   *)
 
 is-glob/index.js:
   (*!
