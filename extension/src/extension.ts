@@ -2,7 +2,7 @@
 //
 // Sub-Task 2: SnapshotProducer + GitPollingNotifier wiring.
 // Sub-Task 5: AnalysisRunner, Diagnostics, StatusBar, TreeView wiring.
-// Sub-Tasks 7–8 will add LLM commands and config file support.
+// Sub-Task 7: LLM commands (explain, setApiKey, clearApiKey, testConnection).
 
 import * as vscode from 'vscode';
 import { GitPollingNotifier } from '@interlens/core';
@@ -12,6 +12,10 @@ import { AnalysisRunner } from './analysis-runner';
 import { updateDiagnostics, COLLECTION_NAME } from './diagnostics';
 import { InterLensStatusBar } from './status-bar';
 import { TeammateTreeDataProvider } from './tree-view';
+import { registerExplainCommand } from './commands/explain';
+import { registerSetApiKeyCommand } from './commands/set-api-key';
+import { registerClearApiKeyCommand } from './commands/clear-api-key';
+import { registerTestConnectionCommand } from './commands/test-connection';
 
 let producer: SnapshotProducer | null = null;
 let notifier: GitPollingNotifier | null = null;
@@ -189,6 +193,16 @@ export function activate(context: vscode.ExtensionContext): void {
     const total = [...findingsByEmail.values()].reduce((s, a) => s + a.length, 0);
     statusBar?.setState('idle', total);
   });
+
+  // --------------------------------------------------------------------------
+  // LLM commands (Sub-Task 7)
+  // --------------------------------------------------------------------------
+  context.subscriptions.push(
+    registerExplainCommand(context, workspaceRoot, findingsByEmail, channel),
+    registerSetApiKeyCommand(context),
+    registerClearApiKeyCommand(context),
+    registerTestConnectionCommand(context),
+  );
 
   channel.appendLine('InterLens activated.');
 }
