@@ -110,11 +110,15 @@ export async function runCheck(
   }
 
   const [cmd, ...args] = command.split(/\s+/);
+  // On Windows, .cmd/.bat files require shell:true to be invocable via execFile.
+  const useShell = process.platform === 'win32' &&
+    (cmd.toLowerCase().endsWith('.cmd') || cmd.toLowerCase().endsWith('.bat'));
   let output = '';
   try {
     const result = await execFile(cmd, args, {
       cwd: dir,
       maxBuffer: 16 * 1024 * 1024,
+      shell: useShell,
       // tsc exits with code 1 even for type errors — we treat all output as relevant
     });
     output = result.stdout + result.stderr;

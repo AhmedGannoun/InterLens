@@ -8,3 +8,11 @@ export { runAnalysis } from './analysis';
 export { tryMerge, materializeTree, clearMaterialisedCache } from './engines/merge';
 export { runCheck, diffErrors, parseTscOutput, detectUnambiguousRename, clearCheckCache } from './engines/tsc';
 export { detectCollisions } from './engines/collision';
+export {
+  extractRoutes,
+  extractCalls,
+  compareEndpoints,
+  normalizePath,
+  normalizeUrl,
+} from './engines/endpoints';
+export type { Route, ApiCall, ExtractResult } from './engines/endpoints';

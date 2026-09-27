@@ -665,7 +665,7 @@ If absent, defaults apply: `checkCommand` = `npx tsc --noEmit -p .`; `sharedType
 ---
 
 ### Sub-Task 3: Merge + TSC Semantic Engine with Tests (8h) ← CRITICAL PATH
-**Status:** [ ] pending
+**Status:** [x] complete
 
 **Intent:** Implement the core pair analysis pipeline: merge attempt, tree materialization, tsc comparison, and error-set diff. This is the most technically novel part. Must pass unit tests before any UI work begins.
 
@@ -695,7 +695,7 @@ If absent, defaults apply: `checkCommand` = `npx tsc --noEmit -p .`; `sharedType
 ---
 
 ### Sub-Task 4: CLI Harness Verification (1h)
-**Status:** [ ] pending
+**Status:** [x] complete
 
 **Intent:** Confirm the CLI harness works end-to-end as a fallback demo path. This is insurance: if the VS Code UI breaks during the demo, a judge can see findings in a terminal.
 
@@ -711,7 +711,7 @@ If absent, defaults apply: `checkCommand` = `npx tsc --noEmit -p .`; `sharedType
 ---
 
 ### Sub-Task 5: Worker, Diagnostics, Tree View, Status Bar (6h)
-**Status:** [ ] pending
+**Status:** [x] complete
 
 **Intent:** Wire the analysis pipeline into VS Code: spawn the worker from the extension host, map findings to diagnostics, and build the status bar and tree view.
 
@@ -733,7 +733,7 @@ If absent, defaults apply: `checkCommand` = `npx tsc --noEmit -p .`; `sharedType
 ---
 
 ### Sub-Task 6: Endpoint Engine (6h)
-**Status:** [ ] pending
+**Status:** [x] complete
 
 **Intent:** Implement the Express route vs fetch/axios consistency checker. Cut to fetch-only string literals if running behind schedule.
 

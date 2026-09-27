@@ -9,5 +9,6 @@
  *
  * This is the fallback demo path if the VS Code UI is broken.
  */
-export {};
+import type { OwnSnapshot } from './types';
+export declare function readLatestSnapshot(repoRoot: string): Promise<OwnSnapshot | null>;
 //# sourceMappingURL=cli.d.ts.map

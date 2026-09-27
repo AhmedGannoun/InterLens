@@ -28,6 +28,9 @@ export class SnapshotProducer {
   private debounceTimer: ReturnType<typeof setTimeout> | null = null;
   private disposables: vscode.Disposable[] = [];
 
+  /** The most recently pushed snapshot; null before the first push. */
+  lastSnapshot: import('@interlens/core').OwnSnapshot | null = null;
+
   constructor(options: SnapshotProducerOptions) {
     this.options = options;
   }
@@ -74,6 +77,7 @@ export class SnapshotProducer {
         this.options.displayName,
       );
       await announceSnapshot(repoRoot, snapshot);
+      this.lastSnapshot = snapshot;
     } catch (err: unknown) {
       this.options.onError?.(err);
     }

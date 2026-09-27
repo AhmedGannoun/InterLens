@@ -7,9 +7,8 @@
  *   2. Tree materialisation
  *   3. TSC comparison (new errors = semantic conflicts)
  *   4. ts-morph enrichment (optional rename detection)
+ *   4b. Endpoint consistency check
  *   5. Collision detection (file-overlap, symbol-overlap)
- *
- * Endpoint engine (Step 4 in the plan) is Sub-Task 6.
  *
  * No execSync. No vscode imports.
  */
@@ -54,6 +53,7 @@ const child_process_1 = require("child_process");
 const util = __importStar(require("util"));
 const merge_1 = require("./engines/merge");
 const tsc_1 = require("./engines/tsc");
+const endpoints_1 = require("./engines/endpoints");
 const collision_1 = require("./engines/collision");
 const execFile = util.promisify(child_process_1.execFile);
 // ---------------------------------------------------------------------------
@@ -93,6 +93,7 @@ async function catFile(repoRoot, treeSha, filePath) {
  *  2. Materialise three trees (merged, mySnap, theirSnap)
  *  3. Run tsc on each; subtract errors; produce semantic-conflict findings
  *  4. Optional ts-morph enrichment for unambiguous renames
+ *  4b. Endpoint consistency check
  *  5. Detect file-overlap and symbol-overlap
  */
 async function runAnalysis(req) {
@@ -223,9 +224,13 @@ async function runAnalysis(req) {
         });
     }
     // -------------------------------------------------------------------------
+    // Step 4b — Endpoint consistency check
+    // -------------------------------------------------------------------------
+    const endpointFindings = (0, endpoints_1.compareEndpoints)(mergedDir, myDir, theirDir, mySnapshot, theirSnapshot);
+    // -------------------------------------------------------------------------
     // Step 5 — Collision detection (file-overlap and symbol-overlap)
     // -------------------------------------------------------------------------
     const collisionFindings = await (0, collision_1.detectCollisions)(repoRoot, mySnapshot, theirSnapshot);
-    return [...semanticFindings, ...collisionFindings];
+    return [...semanticFindings, ...endpointFindings, ...collisionFindings];
 }
 //# sourceMappingURL=analysis.js.map

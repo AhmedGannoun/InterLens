@@ -15,7 +15,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
     for (var p in m) if (p !== "default" && !Object.prototype.hasOwnProperty.call(exports, p)) __createBinding(exports, m, p);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.detectCollisions = exports.clearCheckCache = exports.detectUnambiguousRename = exports.parseTscOutput = exports.diffErrors = exports.runCheck = exports.clearMaterialisedCache = exports.materializeTree = exports.tryMerge = exports.runAnalysis = exports.GitPollingNotifier = void 0;
+exports.normalizeUrl = exports.normalizePath = exports.compareEndpoints = exports.extractCalls = exports.extractRoutes = exports.detectCollisions = exports.clearCheckCache = exports.detectUnambiguousRename = exports.parseTscOutput = exports.diffErrors = exports.runCheck = exports.clearMaterialisedCache = exports.materializeTree = exports.tryMerge = exports.runAnalysis = exports.GitPollingNotifier = void 0;
 __exportStar(require("./types"), exports);
 __exportStar(require("./snapshot"), exports);
 var git_polling_1 = require("./notifier/git-polling");
@@ -34,4 +34,10 @@ Object.defineProperty(exports, "detectUnambiguousRename", { enumerable: true, ge
 Object.defineProperty(exports, "clearCheckCache", { enumerable: true, get: function () { return tsc_1.clearCheckCache; } });
 var collision_1 = require("./engines/collision");
 Object.defineProperty(exports, "detectCollisions", { enumerable: true, get: function () { return collision_1.detectCollisions; } });
+var endpoints_1 = require("./engines/endpoints");
+Object.defineProperty(exports, "extractRoutes", { enumerable: true, get: function () { return endpoints_1.extractRoutes; } });
+Object.defineProperty(exports, "extractCalls", { enumerable: true, get: function () { return endpoints_1.extractCalls; } });
+Object.defineProperty(exports, "compareEndpoints", { enumerable: true, get: function () { return endpoints_1.compareEndpoints; } });
+Object.defineProperty(exports, "normalizePath", { enumerable: true, get: function () { return endpoints_1.normalizePath; } });
+Object.defineProperty(exports, "normalizeUrl", { enumerable: true, get: function () { return endpoints_1.normalizeUrl; } });
 //# sourceMappingURL=index.js.map

@@ -44,6 +44,7 @@ var __importStar = (this && this.__importStar) || (function () {
     };
 })();
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.readLatestSnapshot = readLatestSnapshot;
 const child_process_1 = require("child_process");
 const util = __importStar(require("util"));
 const analysis_1 = require("./analysis");
@@ -98,11 +99,14 @@ async function main() {
     catch {
         // Non-fatal — repoA might already have all objects
     }
+    // Allow tests (and CI) to override the check command via environment variable
+    // rather than requiring `npx` to be available or doing a full npm install.
+    const checkCommand = process.env['INTERLENS_CHECK_COMMAND'] ?? 'npx tsc --noEmit -p .';
     const req = {
         repoRoot: repoA,
         mySnapshot: snapA,
         theirSnapshot: snapB,
-        checkCommand: 'npx tsc --noEmit -p .',
+        checkCommand,
         sharedTypePaths: ['shared/', 'types/', 'contracts/', 'interfaces/'],
     };
     const findings = await (0, analysis_1.runAnalysis)(req);
@@ -114,8 +118,12 @@ async function main() {
         process.stdout.write(JSON.stringify(finding) + '\n');
     }
 }
-main().catch((err) => {
-    process.stderr.write(String(err) + '\n');
-    process.exit(1);
-});
+// Only run main() when this file is the entry point, not when it is imported
+// by tests or other modules.
+if (require.main === module) {
+    main().catch((err) => {
+        process.stderr.write(String(err) + '\n');
+        process.exit(1);
+    });
+}
 //# sourceMappingURL=cli.js.map

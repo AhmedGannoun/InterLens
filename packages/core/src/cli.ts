@@ -23,7 +23,7 @@ async function git(cwd: string, args: string[]): Promise<string> {
   return stdout.trim();
 }
 
-async function readLatestSnapshot(repoRoot: string): Promise<OwnSnapshot | null> {
+export async function readLatestSnapshot(repoRoot: string): Promise<OwnSnapshot | null> {
   // List all refs/interlens/* in this repo
   let lsOutput: string;
   try {
@@ -74,11 +74,15 @@ async function main(): Promise<void> {
     // Non-fatal — repoA might already have all objects
   }
 
+  // Allow tests (and CI) to override the check command via environment variable
+  // rather than requiring `npx` to be available or doing a full npm install.
+  const checkCommand = process.env['INTERLENS_CHECK_COMMAND'] ?? 'npx tsc --noEmit -p .';
+
   const req: AnalysisJobRequest = {
     repoRoot: repoA,
     mySnapshot: snapA,
     theirSnapshot: snapB,
-    checkCommand: 'npx tsc --noEmit -p .',
+    checkCommand,
     sharedTypePaths: ['shared/', 'types/', 'contracts/', 'interfaces/'],
   };
 
@@ -94,7 +98,11 @@ async function main(): Promise<void> {
   }
 }
 
-main().catch((err: unknown) => {
-  process.stderr.write(String(err) + '\n');
-  process.exit(1);
-});
+// Only run main() when this file is the entry point, not when it is imported
+// by tests or other modules.
+if (require.main === module) {
+  main().catch((err: unknown) => {
+    process.stderr.write(String(err) + '\n');
+    process.exit(1);
+  });
+}

@@ -6,9 +6,8 @@
  *   2. Tree materialisation
  *   3. TSC comparison (new errors = semantic conflicts)
  *   4. ts-morph enrichment (optional rename detection)
+ *   4b. Endpoint consistency check
  *   5. Collision detection (file-overlap, symbol-overlap)
- *
- * Endpoint engine (Step 4 in the plan) is Sub-Task 6.
  *
  * No execSync. No vscode imports.
  */
@@ -21,6 +20,7 @@ import * as util from 'util';
 
 import { tryMerge, materializeTree } from './engines/merge';
 import { runCheck, diffErrors, detectUnambiguousRename } from './engines/tsc';
+import { compareEndpoints } from './engines/endpoints';
 import { detectCollisions } from './engines/collision';
 import type { AnalysisJobRequest, Finding, OwnSnapshot, TeammateSnapshot } from './types';
 
@@ -71,6 +71,7 @@ async function catFile(
  *  2. Materialise three trees (merged, mySnap, theirSnap)
  *  3. Run tsc on each; subtract errors; produce semantic-conflict findings
  *  4. Optional ts-morph enrichment for unambiguous renames
+ *  4b. Endpoint consistency check
  *  5. Detect file-overlap and symbol-overlap
  */
 export async function runAnalysis(req: AnalysisJobRequest): Promise<Finding[]> {
@@ -222,9 +223,20 @@ export async function runAnalysis(req: AnalysisJobRequest): Promise<Finding[]> {
   }
 
   // -------------------------------------------------------------------------
+  // Step 4b — Endpoint consistency check
+  // -------------------------------------------------------------------------
+  const endpointFindings = compareEndpoints(
+    mergedDir,
+    myDir,
+    theirDir,
+    mySnapshot,
+    theirSnapshot,
+  );
+
+  // -------------------------------------------------------------------------
   // Step 5 — Collision detection (file-overlap and symbol-overlap)
   // -------------------------------------------------------------------------
   const collisionFindings = await detectCollisions(repoRoot, mySnapshot, theirSnapshot);
 
-  return [...semanticFindings, ...collisionFindings];
+  return [...semanticFindings, ...endpointFindings, ...collisionFindings];
 }

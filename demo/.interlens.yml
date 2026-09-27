@@ -1,0 +1,16 @@
+# .interlens.yml — InterLens project configuration for the demo repo
+checkCommand: "npx tsc --noEmit -p ."
+
+sharedTypePaths:
+  - shared/
+  - types/
+  - contracts/
+  - interfaces/
+
+team:
+  - email: alice@demo.dev
+    displayName: Alice
+    area: frontend
+  - email: bob@demo.dev
+    displayName: Bob
+    area: backend
